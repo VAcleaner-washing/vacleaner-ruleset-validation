@@ -1,1 +1,0 @@
-Synthetic docs-compatible context fixture; independent file avoids conflict with main-advance probes.
