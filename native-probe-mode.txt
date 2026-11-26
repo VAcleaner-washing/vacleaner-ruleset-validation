@@ -1,1 +1,1 @@
-full
+cancel-window
