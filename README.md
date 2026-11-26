@@ -16,4 +16,4 @@ Missing readiness requires removing its entire producer job on a separate fresh 
 
 Owner setup: initialize main and this synthetic bootstrap **before** activating required checks. Then import/read back the exact approved Solo Owner configuration in this repository only. Preserve the repository and all runs until evidence acceptance. Never run destructive/ref probes against production.
 
-Prepared native case: docs-green-001. Synthetic admission probe only.
+Prepared native case: full-green-001. Synthetic admission probe only.
