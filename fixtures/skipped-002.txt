@@ -1,0 +1,1 @@
+Synthetic deliberately skipped readiness. Native admission is a known residual-risk test, not fail-closed application readiness.
