@@ -15,3 +15,5 @@ The three synthetic check names intentionally match the proposed required contex
 Missing readiness requires removing its entire producer job on a separate fresh SHA. Workflow-replacement tests require a distinct deliberately modified workflow. Keep one active fixture workflow per scenario: do not add another successful same-name check on a head under test. Do not use shell exit78 as a neutral result. Wrong-App and legitimate same-App neutral checks need separately available capabilities; mark unavailable checks NOT RUN.
 
 Owner setup: initialize main and this synthetic bootstrap **before** activating required checks. Then import/read back the exact approved Solo Owner configuration in this repository only. Preserve the repository and all runs until evidence acceptance. Never run destructive/ref probes against production.
+
+Prepared native case: missing-ready-001. Synthetic admission probe only.
