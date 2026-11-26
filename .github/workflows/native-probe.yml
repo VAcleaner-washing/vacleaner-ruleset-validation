@@ -1,0 +1,103 @@
+name: Isolated native enforcement probe
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  probe_config:
+    name: Isolated probe configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: mode
+        run: node scripts/native-probe.mjs configure
+
+  classify:
+    name: PR change classification
+    needs: probe_config
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      PROBE_CONFIG_RESULT: ${{ needs.probe_config.result }}
+      PROBE_MODE: ${{ needs.probe_config.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/native-probe.mjs producer
+
+  scope:
+    name: Roadmap scope guard
+    needs: probe_config
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      PROBE_CONFIG_RESULT: ${{ needs.probe_config.result }}
+      PROBE_MODE: ${{ needs.probe_config.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/native-probe.mjs producer
+
+  heavy:
+    name: Synthetic non-required heavy fixture
+    needs: probe_config
+    if: ${{ needs.probe_config.result == 'success' && needs.probe_config.outputs.mode != 'docs-only' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      PROBE_CONFIG_RESULT: ${{ needs.probe_config.result }}
+      PROBE_MODE: ${{ needs.probe_config.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/native-probe.mjs producer
+
+  readiness:
+    name: Release readiness
+    needs: [probe_config, classify, scope, heavy]
+    if: ${{ !cancelled() && (needs.probe_config.result != 'success' || needs.probe_config.outputs.mode != 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      PROBE_CONFIG_RESULT: ${{ needs.probe_config.result }}
+      PROBE_MODE: ${{ needs.probe_config.outputs.mode }}
+      PROBE_CLASSIFY_RESULT: ${{ needs.classify.result }}
+      PROBE_SCOPE_RESULT: ${{ needs.scope.result }}
+      PROBE_HEAVY_RESULT: ${{ needs.heavy.result }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/native-probe.mjs readiness
