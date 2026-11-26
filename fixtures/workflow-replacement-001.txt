@@ -1,0 +1,1 @@
+Intentional synthetic workflow-integrity limitation probe: failed mode is made green by replacing only the readiness invocation. Not application QA.
