@@ -100,4 +100,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Pre-window notice (test window not started)
+        run: |
+          node --input-type=module -e 'console.log("PRE_WINDOW_NOTICE: original120-second cancellation window opens after30seconds; only this isolated run is the target"); await new Promise(resolve => setTimeout(resolve, 30000));'
       - run: node scripts/native-probe.mjs readiness

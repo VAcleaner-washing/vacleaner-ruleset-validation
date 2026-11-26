@@ -1,1 +1,0 @@
-Synthetic cancellation probe. Cancel only after Release readiness is running and its window marker appears.
