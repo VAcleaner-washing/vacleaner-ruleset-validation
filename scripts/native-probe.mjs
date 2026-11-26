@@ -13,7 +13,7 @@ function context() {
   const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
   requireValue(event.repository?.full_name === expectedRepository, 'Event repository mismatch');
   if (process.env.GITHUB_EVENT_NAME === 'push') {
-    requireValue(process.env.GITHUB_REF === 'refs/heads/main' && event.ref === 'refs/heads/main' && event.deleted === false, 'Only a non-deleted isolated main push is allowed');
+    requireValue(['refs/heads/main', 'refs/heads/native/no-pr-001'].includes(process.env.GITHUB_REF) && event.ref === process.env.GITHUB_REF && event.deleted === false, 'Only explicitly listed non-deleted isolated push refs are allowed');
   } else {
     requireValue(process.env.GITHUB_EVENT_NAME === 'pull_request', 'Unsupported event');
     requireValue(['opened', 'synchronize', 'reopened'].includes(event.action), 'Unsupported PR action');

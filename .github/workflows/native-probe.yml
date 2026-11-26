@@ -2,7 +2,7 @@ name: Isolated native enforcement probe
 
 on:
   push:
-    branches: [main]
+    branches: [main, native/no-pr-001]
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]

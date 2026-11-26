@@ -1,0 +1,1 @@
+Synthetic no-PR fast-forward probe. Do not open a pull request for this head before the native rejection attempt.
