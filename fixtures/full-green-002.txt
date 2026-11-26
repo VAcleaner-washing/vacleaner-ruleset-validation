@@ -1,0 +1,1 @@
+Synthetic full admission and thread-resolution fixture. No application QA or production content.
